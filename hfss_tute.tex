@@ -1,0 +1,384 @@
+\documentclass[11pt]{article}
+\usepackage[margin=2cm]{geometry}
+\setlength{\parskip}{0.5em}
+\setlength\parindent{0pt}
+\interfootnotelinepenalty=10000
+
+% language and font encodings
+% \usepackage[english]{babel}
+% \usepackage[utf8x]{inputenc}
+% \usepackage[T1]{fontenc}
+
+% math
+\usepackage{amssymb}
+\usepackage{amsmath}
+
+% figures and tables
+\usepackage{graphicx}
+\graphicspath{{fig/}}
+\usepackage{subfigure}	
+\usepackage{float}		
+\setlength{\floatsep}{10pt plus 2.0pt minus 2.0pt}
+\usepackage{caption}
+% \usepackage{pdfpages}
+% \usepackage{epstopdf}
+% \usepackage{svg}
+% \usepackage{pgfplots}	
+% \pgfplotsset{compat=newest}
+% \setlength\tabcolsep{1em}
+% \usepackage{multirow}
+% \renewcommand{\arraystretch}{1.3}
+\usepackage[font=footnotesize,labelfont=bf]{caption}
+
+% science
+% \usepackage{siunitx}
+% \DeclareSIUnit{\molar}{M}
+% \usepackage{chemformula}
+
+% miscellaneous 
+\usepackage{enumitem}	
+\usepackage{verbatim}
+% \usepackage{xcolor}
+% \usepackage[color=cyan]{todonotes}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{csquotes}
+
+\renewcommand{\abstractname}{\vspace{-\baselineskip}}
+
+\newcommand{\note}[1]{\colorbox{cyan}{#1}}
+
+\title{\textsc{{ANSYS High Frequency Structure Simulation (HFSS)}} \\ Introductory help \vspace{-0.5cm}}
+\author{\textsc{Shiye Su, Staggs Lab, Summer '17} \vspace{0cm}}
+\date{\vspace{-1cm}}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+
+HFSS is a finite element method (FEM) solver for electromagnetic structures, used to simulate antennas, transmission lines, circuits, etc. for design and optimisation purposes. It uses an iterative adaptive solution process to find solutions to high accuracy and as output produces field and S-matrix results. The interface is GUI. Here is \href{http://www.ansys.com/products/electronics/ansys-hfss}{HFSS according to ANSYS}. 
+
+\end{abstract}
+
+\vspace{2cm}
+
+\tableofcontents
+
+\newpage
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Useful resources}
+\label{sec:resources}
+
+Googling and random forums often help for specific issues, but for a general overview here are some helpful guides already available:
+
+\begin{enumerate}
+
+	\item \href{http://e-science.ru/sites/default/files/upload_forums_files/8u/HFSSintro.pdf}{An Introduction to HFSS: Fundamental Principles, Concepts, and Use}. (Official) This is informative, easy to understand, clearly steps through the simulation workflow. What a truly scintillating read. 
+
+	\item \href{http://anlage.umd.edu/HFSSv10UserGuide.pdf}{HFSS User's Guide}. (Official) A long reference document, explicitly shows how to navigate the GUI to do specific tasks, includes examples. 
+
+	\item The help menu in the HFSS Desktop, which I haven't managed to find online. The most comprehensive. The search function is useful. The walked-through examples are good for familiarising oneself with the environment.
+
+	\item Tutorials on the internet. These typically guide the user through simulating a specific model; good for experimenting with HFSS, but often don't explain the purpose of each of the steps. I found \href{https://indico.fnal.gov/getFile.py/access?contribId=10&resId=1&materialId=slides&confId=13068}{this} generally helpful, and \href{http://www.rit.edu/~w-eta/docs/Project-1-HFSS-tutorial-Rectangular%20WG.pdf}{this} helpful for investigating propagation modes.
+
+\end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{How it works}
+
+This was well explained by the Introduction to HFSS (which also details the actual equations used): 
+
+\blockquote{HFSS uses a numerical technique called the Finite Element Method (FEM). This is a procedure where a structure is subdivided into many smaller subsections called finite elements. The finite elements used by HFSS are tetrahedra, and the entire collection of tetrahedra is called a mesh. A solution is found for the fields within the finite elements, and these fields are interrelated so that Maxwell’s equations are satisfied across inter-element boundaries, yielding a field solution for the entire, original, structure. Once the field solution has been found, the generalized S-matrix solution is determined.}
+
+HFSS functions on adaptive analysis, which means the mesh (Figure \ref{fig:mesh}) is redefined iteratively and where the error is high. Each iteration improves solution accuracy, and when the error is within the user-defined tolerance, the simulation halts. Note: HFSS creates the mesh at the user specified excitation frequency; a frequency sweep for this structure would be performed using this same mesh for all frequencies.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.4\textwidth]{mesh.png}
+	\caption{HFSS mesh adaptive analysis shown on example patch antenna.}
+	\label{fig:mesh}
+\end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{GUI}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\textwidth]{gui.png}
+	\caption{HFSS interface. Cribbed from the User's Guide. However, the toolbar now looks more like as in Figure \ref{fig:toolbar}.}
+	\label{fig:gui}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\textwidth]{toolbar.png}
+	\caption{Toolbar.}
+	\label{fig:toolbar}
+\end{figure}
+
+\begin{itemize}
+
+	\item \textsc{Project Manager:} contains all the designs saved in this .hfss file, as well as Definitions (e.g. material properties and variables used in the designs); each design has a tree containing its properties and results.
+
+	\item \textsc{Message Manager:} displays errors and warnings.
+
+	\item \textsc{Property Window:} (typically only pops up when the user finishes specifying an object) enables user to alter model geometries and attributes.
+
+	\item \textsc{Progress Window:} displays solution progress
+
+	\item \textsc{3D Modeler Window:} displays model graphically, constituent components and model properties appear in the model tree.
+
+\end{itemize}
+
+There are usually many ways to do the same thing: often the same item can be found 1) in the menu bar or toolbar, 2) by right clicking on the relevant category in the Project Manager, 3) by right clicking in the 3D Modeler window.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Workflow}
+
+\begin{enumerate}
+	\itemsep-0.2em
+
+	\item solution type
+	\item model
+	\item boundaries
+	\item excitations
+	\item solution setup
+	\item solve
+	\item post-processing
+
+\end{enumerate}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Selecting the solution type}
+
+Choose a Solution Type at \textsc{HFSS - Solution Type} under the Toolbar. The differences according to HFSS's help menu:
+
+\blockquote{Choose the \textsc{Driven Modal} solution type when you want HFSS to calculate the modal-based S-parameters of passive, high-frequency structures such as microstrips, waveguides, and transmission lines. The S-matrix solutions will be expressed in terms of the incident and reflected powers of waveguide modes. 
+
+Choose the \textsc{Driven Terminal} solution type when you want HFSS to calculate the terminal-based S-parameters of single and multi-conductor transmission line ports. The S-matrix solutions will be expressed in terms of voltages and currents on the terminals. % The voltage and current are calculated respecitively by integrations of the E and H along the defined integration line. 
+
+The \textsc{Transient} solution is for calculating problems in the time domain. It employs a time-domain (transient) solver. Typical transient applications include, but are not limited to: simulations with pulsed excitations, such as ultra-wideband antennas, lightning strikes, electro-static discharge; field visualization employing short-duration excitations; time-domain reflectometry.
+
+Choose the \textsc{Eigenmode} solution type to calculate the eigenmodes, or resonances, of a structure. The Eigenmode solver finds the resonant frequencies of the structure and the fields at those resonant frequencies.}
+
+Modal, Terminal, and Transient are Driven types and enable \textsc{Network Analysis} or \textsc{Composite Excitation}; Eigenmode is not driven and does not. According to HFSS's help menu, in Network Analysis, excitations are identical on all active ports, while
+
+\blockquote{Composite Excitation provides a method for solving fields in a large frequency domain problem. Different ports can have different excitations and all active excitations are launched in one simulation.}
+
+\begin{comment}
+Quote HFSS: {Network Analysis is the default and functions as before.
+\end{comment}
+
+You may also want to set the Model Units at \textsc{Modeler - Units} under the Toolbar.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Creating the model}
+
+Using the 3D Modeler, specify the geometry and material properties (HFSS comes with a materials library - visible in Figure \ref{fig:fincond} - with properties like permittivity, permeability, conductivity, etc.) of the structure. Dimensions can be specified using variables that can be later adjusted. Find shapes under the toolbar or \textsc{Draw} menu (exact dimensions can be set under the shape's properties). Multiple structures can be combined by Booleans like Add, Subtract.
+
+Alternatively, structures can be externally imported.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Specifying boundaries}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.3\textwidth]{boundary.png}
+	\caption{Boundary conditions determine the behaviour of magnetic and electric fields at surfaces. The user can specify boundaries by selecting the element of interest and right clicking. Further changes can be made from the Project Tree.}
+	\label{fig:boundary}
+\end{figure}
+
+The most commonly used boundaries are:
+\begin{itemize}
+
+	\item \textsc{Perfect E:} perfectly conducting surface, forces E field to be normal to surface.
+
+	\item \textsc{Finite conductivity:} imperfect conductor, specify as in Figure \ref{fig:fincond}.
+
+	\item \textsc{Radiation:} open boundary, absorbs from or allows waves to radiate infinitely far into space. Note: if specifying a radiation box to enclose model, the box should be more than $ \lambda / 4 $ away from the structure.
+
+	\item \textsc{Perfect H:} forces tangential component of H field to be same on both sides of the boundary.
+
+\end{itemize}
+
+More details available in the HFSS help menu.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\textwidth]{fincond.png}
+	\caption{Specifying the finite conductivity boundary. A material can be selected from the built-in library.}
+	\label{fig:fincond}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Specifying excitations}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.3\textwidth]{excite.png}
+	\caption{Excitations specify the sources of electromagnetic fields and charges, currents, or voltages. The user can specify excitations by selecting the element of interest and right clicking. Further changes can be made from the Project Tree.}
+	\label{fig:excite}
+\end{figure}
+
+The most commonly used excitations are:
+\begin{itemize}
+
+	\item \textsc{Wave Port:} represents the surface through which a signal enters or exits a geometry, treated as a semi-infinite waveguide of the same dimensions as the port attached to the model.
+
+	\item \textsc{Lumped Port:} represents an internal surface through which a signal enters or exits the geometry, effectively a small impedance pole for exiting the structure.
+
+\end{itemize}
+
+More details available in the HFSS help menu.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Setting up the solution}
+
+Click on the magnifying glass icon in the first row center of toolbar (see Figure \ref{fig:toolbar}). Select a solution frequency, convergence criteria.
+
+For a frequency sweep, click on the red graph icon in the first row center of toolbar. Select the frequency band of interest and frequency sweep methodology. 
+
+\begin{figure}[H]
+	\centering
+	\subfigure[Solution setup.]{\includegraphics[width=0.3\textwidth]{solsetup.png}}
+	\subfigure[Frequency sweep setup.]{\includegraphics[width=0.4\textwidth]{freqsweep.png}}
+	\caption{Setting up a solution.}
+	\label{fig:solsetup}
+\end{figure}
+
+Here's what HFSS says about the different sweep types:
+\blockquote{
+
+\textsc{Fast Sweep} generates a unique full-field solution for each division within a frequency range. Best for models that will abruptly resonate or change operation in the frequency band. A Fast sweep will obtain an accurate representation of the behavior near the resonance. Fast sweeps are disabled if an anistropic boundary condition is present.
+
+\textsc{Discrete Sweep} generates field solutions at specific frequency points in a frequency range. Best when only a few frequency points are necessary to accurately represent the results in a frequency range.
+
+\textsc{Interpolating Sweep} (default) estimates a solution for an entire frequency range. Best when the frequency range is wide and the frequency response is smooth, or if the memory requirement of a Fast sweep exceed your resources. All discrete basis solutions are solved prior to interpolating sweeps because it is possible that an interpolating sweep can re-use already solved frequencies from a discrete sweep.
+
+}
+
+\begin{comment}
+additional notes from the internet
+
+1) Fast Sweep
+The fast sweep finds the "poles and zeros" of the problem to calculate S-parameters. Fast sweep should be your "default" as long as Fmax/Fmin < 4 (rule of thumb). Fields are available on all frequencies.
+
+2) Interpolating Sweeps
+This sweep is ussually used when a DC solution is needed or a very broadband sweep Fmax/Fmin > 4. HFSS chooses which frequency points are "ideal" for interplating the S-parameters. The downside is that it does not produce fields (just S/Y/Z parameters). If you require a field solution in a specific frequency use an interpolating sweep together with a single frequency discrete sweep (use the same Setup - to reuse the mesh from the interpolating sweep).
+
+BTW - together with the new DC thickness option, HFSSv10 is now used to produce highly accurate S-parameters from DC through MHz up to tens of GHz (and beyond). In the past users were required to solve inside metal which increased the simulation time.
+
+When simulating very broadband S-parameters, one may want to use two interpolating sweeps. The first one up to the third harmonic with a high interpolation accuracy and the second sweep complementing to the fifth harmonic with reduced interpolation accuracy. HFSS interpolation in high frequencies is always superior to that of a circuit simulator.
+
+3)Discrete Sweeps
+Discrete sweeps are rarely used. Some engineers that require only 5 or 10 frequency points claim that discrete sweep may be faster. 
+Discrete is the only sweep where the simulation time is proportional to the number of frequency points specified. 
+I only use it to calculate fileds after doing an interpolating sweep.
+
+\end{comment}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Solving}
+
+Do a \textsc{Validation Check} first (Green tick icon in first row centre of toolbar, see Figure \ref{fig:toolbar}). This ensures there are no glaring errors so that the simulation has a non-zero chance of working.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.4\textwidth]{valid.png}
+	\caption{Validation Check dialogue box.}
+	\label{fig:valid}
+\end{figure}
+
+\textsc{Run} the simulation (Green exclamation mark icon in the first row center of toolbar, see Figure \ref{fig:toolbar}). The Progress Window appears in the bottom right of the screen.
+
+It can be useful to watch the \textsc{Solutions} (Figure \ref{fig:sol}) while the simulation is running (Two sheets of white paper icon in the first row center of toolbar, see Figure \ref{fig:toolbar}). The entries here will be populated as the simulation progresses, and under the tabs \textsc{Profile, Convergence, Matrix Data, \text{and} Mesh Statistics} is displayed information like runtime, memory, convergence characteristics, tetrahedra counts, etc. Sometimes you can gauge from here how long the simulation will take. If the simulation is taking too long, check that the geometry and boundaries are correct and consider decreasing the Number of Passes and Maximum Delta S requirements.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\textwidth]{sol.png}
+	\caption{Solutions dialogue box.}
+	\label{fig:sol}
+\end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Post-processing the simulation results}
+
+HFSS generates many report types; both the Introduction to HFSS the HFSS User Guide cited earlier describe these, the latter in detail. Plots can be created by right-clicking \textsc{Results} under the Project Manager. Perhaps the most frequently used are:
+
+\begin{itemize}
+
+	\item Create Modal Solution Data Report (right-click \textsc{Results} under the Project Manager): S Parameter plots are created from here. Also available: Y, Z Parameters, propagation constant, etc. (Figure \ref{fig:sparam})
+
+	\item Create Far Fields Report (right-click \textsc{Results} under the Project Manager): radiated fields computed in the far-field, for generating beam response patterns. (Figure \ref{fig:beam}) To create the response function plot, the design must have a Radiation or PML boundary and an Infinite Sphere geometry must be defined from \textsc{Radiation - Insert Far Field Setup} under the Project Tree. The theta and phi values here (Figure \ref{fig:farfield}) will be the plotted points on the report.
+
+	\item Field Overlays (right-click \textsc{Field Overlays - Plot Fields} under the Project Manager): view E, H, J fields, Poynting vector, the simulation's mesh setup, etc. superimposed over the design or a surface of it. (Figure \ref{fig:overlay}) These overlays can be animated.
+
+\end{itemize}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\textwidth]{sparam.png}
+	\caption{Example S parameter plot for the three terminals of a T-junction with variable septum displacement `offset'.}
+	\label{fig:sparam}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.3\textwidth]{farfield.png}
+	\caption{Far field radiation sphere setup.}
+	\label{fig:farfield}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\subfigure[Polar.]{\includegraphics[width=0.43\textwidth, trim={8cm 5cm 0 3.5cm}, clip]{beampol.png}}
+	\subfigure[Rectangular.]{\includegraphics[width=0.46\textwidth, trim={7cm 5cm 0 3.5cm}, clip]{beamrect.png}}
+	\caption{Beam response pattern plots.}
+	\label{fig:beam}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.5\textwidth]{overlay.png}
+	\caption{Example electric field (both magnitude and vector) overlay on a conical feedhorn.}
+	\label{fig:overlay}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Useful keyboard commands}
+
+For manipulating the 3D Modeler Window
+\begin{itemize}
+	\itemsep-0.2em
+
+	\item shift + left mouse drag: pan
+	\item alt + left mouse drag: rotate
+	\item alt + shift + left mouse: zoom in and out (scroll also works)
+	\item ctrl + D: adjust viewing window to fit entire object
+	\item F: face selection mode
+	\item O: object selection mode 
+
+\end{itemize}
+
+More complete list in the guides linked in \ref{sec:resources}.
+
+
+\end{document}
