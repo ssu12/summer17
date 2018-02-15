@@ -1,0 +1,25 @@
+
+safety factor estimates, using corresponding channels and optical parameters
+method: Psat = fsafety * Ptot (Psat from lab, Ptot from NETbook)
+default fsafety = 3.0
+
+label       nu	psafety
+
+mf1_maria   90	3.622
+            150	2.906
+
+mf2_maria   90	4.764
+            150	3.504
+
+mf1_steve   90	4.324
+            150	3.325
+
+mf2_steve   90	4.675
+            150	3.677
+
+hf_steve    150	3.35
+            220	1.354
+
+
+Sat Sep  9 21:22:54 2017
+

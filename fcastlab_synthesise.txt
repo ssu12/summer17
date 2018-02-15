@@ -1,0 +1,28 @@
+
+synthesising NETbook forecast and lab data to produce NEP_tot, NET_single, NET_array 
+method: NEP^2_synth = NEP_forecast^2 - NEPG_forecast^2 + NEPG_labtest^2
+
+
+label       nu          nep         net_single  net         
+
+            GHz         W rt(Hz)    K rt(s)     K rt(s)     
+
+mf1_maria   90          3.461e-17   1.597e-04   8.215e-06   
+            150         4.657e-17   2.232e-04   1.054e-05   
+
+mf2_maria   90          3.635e-17   1.678e-04   8.629e-06   
+            150         4.743e-17   2.273e-04   1.074e-05   
+
+mf1_steve   90          3.548e-17   1.638e-04   8.423e-06   
+            150         4.693e-17   2.249e-04   1.063e-05   
+
+mf2_steve   90          3.618e-17   1.669e-04   8.587e-06   
+            150         4.770e-17   2.286e-04   1.080e-05   
+
+hf_steve    150         4.665e-17   1.669e-04   8.587e-06   
+            220         1.203e-16   2.286e-04   1.080e-05   
+
+*as of the creation of this file, the CMB factor, 1/ (r * sqrt(2) * etasky), used in NEP -> NET_single conversion is calculated within the sensitivity_labtests.ipynb module. It differs from the CMB factor used in NETbook due to small differences in nu (90, 150, 220 here, channels.txt values in NETbook) and not insignificant differences in etasky (due to NETbook assuming as the same the absorb and reflect optparams for all LPs (LP40, LP1a, LP1b))
+
+Sat Sep  9 21:23:32 2017
+
